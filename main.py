@@ -29,7 +29,7 @@ def iniciar_sesion(
 ):
     usuario = db.query(models.Usuarios).filter(models.Usuarios.Email == form_data.username).first()
 
-    if not usuario or not security.verificar_contraseña(form_data.password, usuario.Password):
+    if not usuario or not security.validar_contraseña(form_data.password, usuario.Password):
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED, details="Datos incorrectos")
 
     token = security.crear_token_acceso(datos = {"sub":usuario.Email})
