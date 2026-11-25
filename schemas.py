@@ -2,6 +2,9 @@ from pydantic import BaseModel, EmailStr, ConfigDict
 from datetime import time
 from typing import Literal
 
+class Token(BaseModel):
+    acces_token: str
+    token_type: str
 
 class CrearUsuario(BaseModel):
     Email: EmailStr

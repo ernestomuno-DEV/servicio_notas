@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import models, schemas, security
 from db import get_db, engine
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -20,6 +21,19 @@ app.add_middleware(
 @app.get("/")
 def saludo():
     return {'Saludo': 'Hola mundo'}
+
+@app.post("/login/", response_model=schemas.Token)
+def iniciar_sesion(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    usuario = db.query(models.Usuarios).filter(models.Usuarios.Email == form_data.username).first()
+
+    if not usuario or not security.verificar_contraseña(form_data.password, usuario.Password):
+        raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED, details="Datos incorrectos")
+
+    token = security.crear_token_acceso(datos = {"sub":usuario.Email})
+    return {"acces_token": token, "token_type": "bearer"}
 
 @app.post("/usuarios/", response_model=schemas.LeerUsuario, status_code = status.HTTP_201_CREATED)
 def crear_usuario(usuario:schemas.CrearUsuario, db:Session = Depends(get_db)):
