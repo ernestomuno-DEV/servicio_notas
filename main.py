@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-import models, schemas
+import models, schemas, security
 from db import get_db, engine
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -21,6 +21,23 @@ app.add_middleware(
 def saludo():
     return {'Saludo': 'Hola mundo'}
 
+@app.post("/usuarios/", response_model=schemas.LeerUsuario, status_code = status.HTTP_201_CREATED)
+def crear_usuario(usuario:schemas.CrearUsuario, db:Session = Depends(get_db)):
+    usuario_existente = db.query(models.Usuarios).filter(models.Usuarios.Email == usuario.Email).first()
+    if usuario_existente:
+        raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail= "El usuario ya existe")
+
+    contraseña_segura = security.encriptar_contraseña(usuario.Password)
+
+    nuevo_usuario = models.Usuarios(
+        Email = usuario.Email,
+        Password = contraseña_segura
+    )
+
+    db.add(nuevo_usuario)
+    db.commit()
+    db.refresh(nuevo_usuario)
+    return nuevo_usuario
 
 @app.post("/notas/", response_model=schemas.LeerNotas)
 def crear_nota(nota: schemas.CrearNotas,db: Session = Depends(get_db)):

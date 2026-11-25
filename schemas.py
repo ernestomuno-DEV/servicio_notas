@@ -1,6 +1,18 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, ConfigDict
 from datetime import time
 from typing import Literal
+
+
+class CrearUsuario(BaseModel):
+    Email: EmailStr
+    Password: str
+
+class LeerUsuario(BaseModel):
+    id: int
+    Email: EmailStr
+    Activo: bool
+
+    model_config = ConfigDict(from_atributes = True)
 
 class CrearNotas(BaseModel):
     Titulo:str
