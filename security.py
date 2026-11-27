@@ -14,7 +14,7 @@ password_hash = PasswordHash.recommended()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/")
 
-SECRET_KEY = os.getenv("SECRETE_KEY", "mysecretkey")
+SECRET_KEY = os.getenv("SECRET_KEY", "mysecretkey")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
@@ -39,12 +39,12 @@ def obtener_usuario_actual(
     credenciales_invalidas = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Token invalido o expirado",
-        headers={"WWW-Autenticate": "Bearer"}
+        headers={"WWW-Authenticate": "Bearer"}
     )
 
     try:
         payload = jwt.decode(token,SECRET_KEY, algorithms=[ALGORITHM])
-        email: str | None = payload("sub")
+        email: str | None = payload.get("sub")
         if email is None:
             raise credenciales_invalidas
     except jwt.PyJWTError:
