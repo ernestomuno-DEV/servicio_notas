@@ -51,7 +51,7 @@ def obtener_usuario_actual(
         raise credenciales_invalidas
 
     usuario = db.query(models.Usuarios).filter(models.Usuarios.Email == email).first()
-    if usuario is None or not usuario.Activo:
+    if usuario is None:
         raise credenciales_invalidas
 
     return usuario
