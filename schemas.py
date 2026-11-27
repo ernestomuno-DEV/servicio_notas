@@ -3,7 +3,7 @@ from datetime import time
 from typing import Literal
 
 class Token(BaseModel):
-    acces_token: str
+    access_token: str
     token_type: str
 
 class CrearUsuario(BaseModel):

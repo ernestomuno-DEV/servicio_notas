@@ -34,7 +34,7 @@ def iniciar_sesion(
         raise HTTPException(status_code = status.HTTP_401_UNAUTHORIZED, details="Datos incorrectos")
 
     token = security.crear_token_acceso(datos = {"sub":usuario.Email})
-    return {"acces_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer"}
 
 @app.post("/usuarios/", response_model=schemas.LeerUsuario, status_code = status.HTTP_201_CREATED)
 def crear_usuario(usuario:schemas.CrearUsuario, db:Session = Depends(get_db)):
