@@ -12,7 +12,7 @@ from db import get_db
 
 password_hash = PasswordHash.recommended()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/")
 
 SECRET_KEY = os.getenv("SECRETE_KEY", "mysecretkey")
 ALGORITHM = "HS256"
