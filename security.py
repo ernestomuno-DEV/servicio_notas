@@ -43,15 +43,21 @@ def obtener_usuario_actual(
     )
 
     try:
-        payload = jwt.decode(token,SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str | None = payload.get("sub")
         if email is None:
+            print("DEBUG JWT: 'sub' vino vacío en el payload:", payload)
             raise credenciales_invalidas
-    except jwt.PyJWTError:
+    except jwt.PyJWTError as e:
+        print("DEBUG JWT ERROR:", type(e).__name__, str(e))
         raise credenciales_invalidas
 
     usuario = db.query(models.Usuarios).filter(models.Usuarios.Email == email).first()
     if usuario is None:
+        print("DEBUG DB: No se encontró el correo:", email)
+        raise credenciales_invalidas
+    if not usuario.Activo:
+        print("DEBUG DB: El usuario tiene Activo =", usuario.Activo)
         raise credenciales_invalidas
 
     return usuario
