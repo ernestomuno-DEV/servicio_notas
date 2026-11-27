@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean, Time
+from sqlalchemy import Column, Integer, String, Float, Boolean, Time, ForeignKey
+from sqlalchemy.orm import relationship
 from db import Base
 from datetime import time
 
@@ -10,6 +11,8 @@ class Usuarios(Base):
     Password = Column(String, nullable = False)
     Activo = Column(Boolean, default=True)
 
+    nota = relationship("Notas", back_populates="propietario")
+
 
 class Notas(Base):
     __tablename__ = "notas"
@@ -20,3 +23,6 @@ class Notas(Base):
     Limite = Column(Time,index=True)
     Clasificacion = Column(String, index = True)
     Completada = Column(Boolean, index= True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"))
+
+    propietario = relationship("Usuarios", back_populates="notas")
