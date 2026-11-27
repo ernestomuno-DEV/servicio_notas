@@ -11,7 +11,7 @@ class Usuarios(Base):
     Password = Column(String, nullable = False)
     Activo = Column(Boolean, default=True)
 
-    nota = relationship("Notas", back_populates="propietario")
+    notas = relationship("Notas", back_populates="propietario")
 
 
 class Notas(Base):
